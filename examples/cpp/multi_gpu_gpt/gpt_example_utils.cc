@@ -23,7 +23,7 @@ namespace fastertransformer {
 int read_start_ids(int batch_size,
                    std::vector<int>* v_start_lengths,
                    std::vector<int>* v_start_ids,
-                   int& max_input_len,
+                   int max_input_len,
                    const int end_id,
                    const int beam_width,
                    std::string file_name)
@@ -55,7 +55,7 @@ int read_start_ids(int batch_size,
         return 0;
     }
 
-    max_input_len = tmp_start_lengths.data()[0];
+    // max_input_len = tmp_start_lengths.data()[0];
     for (uint i = 1; i < (uint)tmp_start_lengths.size(); i++) {
         max_input_len = max_input_len > tmp_start_lengths.data()[i] ? max_input_len : tmp_start_lengths.data()[i];
     }

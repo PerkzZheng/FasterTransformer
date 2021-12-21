@@ -96,7 +96,7 @@ void multi_gpu_gpt_example(const INIReader reader)
     const size_t request_batch_size = reader.GetInteger("request", "request_batch_size");
     // The length of tokens we hope this model to generate
     const int request_output_len = reader.GetInteger("request", "request_output_len");
-
+    int max_input_len = reader.GetInteger("request", "input_len");
     const int start_id = 50256;
     const int end_id = 50256;
 
@@ -180,7 +180,6 @@ void multi_gpu_gpt_example(const INIReader reader)
         ncclCommInitRank(&pipeline_para_nccl_comm, pipeline_para_size, pipeline_para_nccl_uid, pipeline_para_rank));
 
     // Read ids of request from file.
-    int max_input_len = -1;
     std::vector<int> v_start_lengths;
     std::vector<int> v_start_ids;
     read_start_ids(request_batch_size,
@@ -341,7 +340,7 @@ void multi_gpu_gpt_example(const INIReader reader)
 
     cudaProfilerStart();
     // warm up
-    ite = 1;
+    ite = 5;
     nvtx::setScope("warmup_time");
     PUSH_RANGE("warmup time")
     for (int i = 0; i < ite; ++i) {
@@ -387,6 +386,7 @@ void multi_gpu_gpt_example(const INIReader reader)
     }
 
     // test time
+    ite = 10;
     struct timeval start, end;
     MPI_Barrier(MPI_COMM_WORLD);
     cudaDeviceSynchronize();
