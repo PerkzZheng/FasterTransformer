@@ -102,14 +102,14 @@ BertTritonModelInstance<T>::forward(std::shared_ptr<std::unordered_map<std::stri
 
     bert_->forward(&output_tensors, &ft_input_tensors, bert_weight_.get());
 
-    if (d_input_hidden_state_ != nullptr) {
-        ft::check_cuda_error(cudaFree(d_input_hidden_state_));
-        d_input_hidden_state_ = nullptr;
-    }
-    if (d_sequence_lengths_ != nullptr) {
-        ft::check_cuda_error(cudaFree(d_sequence_lengths_));
-        d_sequence_lengths_ = nullptr;
-    }
+    // if (d_input_hidden_state_ != nullptr) {
+    //     ft::check_cuda_error(cudaFree(d_input_hidden_state_));
+    //     d_input_hidden_state_ = nullptr;
+    // }
+    // if (d_sequence_lengths_ != nullptr) {
+    //     ft::check_cuda_error(cudaFree(d_sequence_lengths_));
+    //     d_sequence_lengths_ = nullptr;
+    // }
 
     return convert_outputs(output_tensors);
 }
@@ -134,6 +134,12 @@ void BertTritonModelInstance<T>::freeBuffer()
 {
     if (d_output_hidden_state_ != nullptr) {
         allocator_->free((void**)(&d_output_hidden_state_));
+    }
+    if (d_input_hidden_state_ != nullptr) {
+        allocator_->free((void**)(&d_input_hidden_state_));
+    }
+    if (d_sequence_lengths_ != nullptr) {
+        allocator_->free((void**)(&d_sequence_lengths_));
     }
 }
 
